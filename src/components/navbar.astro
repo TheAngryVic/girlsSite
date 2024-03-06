@@ -1,0 +1,215 @@
+---
+interface Props {
+  titulo: string;
+  link: string;
+}
+
+const { titulo, link } = Astro.props;
+
+import { Astronav, MenuItems, MenuIcon } from "astro-navbar";
+import CInput from "../components/inputForm.astro";
+---
+
+<div>
+  <Astronav>
+    <div id="navBar" class="flex">
+      <div class="">
+        <a class="__logoWrapper" href="{{ link }}">
+          <img
+            class="logo"
+            src="https://raw.githubusercontent.com/github/explore/5cc0a03a302ec862c4aeac2a22a513ae31c35432/topics/astro/astro.png"
+            alt="Logo Astro"
+          />
+        </a>
+      </div>
+      <div>
+        <MenuIcon class="w-4 h-4 text-gray-800" />
+        <label for="astronav-menu">Menú</label>
+      </div>
+      <CInput name="buscador" type="text" _class="clase" />
+    </div>
+    <MenuItems class="hidden lg:flex">
+      <ul>
+        <li><a href="">login</a></li>
+        <li><a href="">destacados</a></li>
+        <li><a href="">tienda</a></li>
+      </ul>
+    </MenuItems>
+  </Astronav>
+</div>
+<!-- <header>
+  <nav id="navBar">
+    <div class="nav-wrapper">
+      <div class="logo">
+        <a href="{{ link }}">
+          <img
+            src="https://www.astro.com.br/wp-content/uploads/2021/06/astro-logo.svg"
+            alt="Logo Astro"
+          />
+        </a>
+      </div>
+
+      <ul id="menu">
+        <li><a href="">home</a></li>
+        <li><a href="">home</a></li>
+        <li><a href="">home</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div id="burguerButton" class="menuIcon">
+    <span class="icon icon-bars"></span>
+    <span class="icon icon-bars overlay"></span>
+  </div>
+
+  <div class="overlay-menu">
+    <ul id="menu">
+      <li><a href="">home</a></li>
+      <li><a href="">home</a></li>
+      <li><a href="">home</a></li>
+    </ul>
+  </div>
+</header> -->
+
+<style>
+  * {
+    border: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: none;
+  }
+
+  .nav-wrapper {
+    margin: auto;
+    text-align: center;
+    width: 70%;
+  }
+  @media (max-width: 768px) {
+    .nav-wrapper {
+      width: 90%;
+    }
+  }
+  @media (max-width: 638px) {
+    .nav-wrapper {
+      width: 100%;
+    }
+  }
+  .logo {
+    float: left;
+    margin-left: 28px;
+    font-size: 1.5em;
+    height: 40px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  @media (max-width: 768px) {
+    .logo {
+      /*       margin-left: 5px; */
+    }
+  }
+
+  .flex {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  #navBar {
+    background: white;
+    color: rgb(13, 26, 38);
+    /* position: fixed; */
+    top: 0;
+    height: 60px;
+    line-height: 60px;
+    width: 100vw;
+    /* z-index: 10; */
+  }
+
+  #navBar ul {
+    display: inline-block;
+    list-style: none;
+  }
+  @media (max-width: 640px) {
+    #navBar ul {
+      display: none;
+    }
+  }
+  @media (orientation: landscape) {
+    #navBar ul {
+      display: inline-block;
+    }
+  }
+
+  #navBar li {
+    display: inline-block;
+  }
+
+  #navBar li a {
+    color: rgb(13, 26, 38);
+    display: block;
+    font-size: 0.7em;
+    height: 50px;
+    letter-spacing: 1px;
+    margin: 0 20px;
+    padding: 0 4px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.5s ease;
+    -webkit-transition: all 0.5s ease;
+  }
+
+  #navBar li a:hover {
+    /* border-bottom: 1px solid rgb(28, 121, 184); */
+    color: rgb(28, 121, 184);
+    transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+  }
+
+  /* Animated Bottom Line */
+  #navBar li a:before,
+  #navBar li a:after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 1px;
+    bottom: -1px;
+    background: rgb(13, 26, 38);
+  }
+
+  #navBar li a:before {
+    left: 0;
+    transition: 0.5s;
+  }
+
+  #navBar li a:after {
+    background: rgb(13, 26, 38);
+    right: 0;
+    /* transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); */
+  }
+
+  #navBar li a:hover:before {
+    background: rgb(13, 26, 38);
+    width: 100%;
+    transition: width 0.5s cubic-bezier((0.22, 0.61, 0.36, 1));
+  }
+
+  #navBar li a:hover:after {
+    background: transparent;
+    width: 100%;
+    /* transition: 0s; */
+  }
+
+  .__logoWrapper {
+    width: 188px;
+    padding-right: 16px;
+    padding-left: 12px;
+  }
+</style>
