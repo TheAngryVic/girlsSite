@@ -1,0 +1,128 @@
+---
+import Layout from "../../layouts/LayoutAdmin.astro";
+import CustomInput from "../../components/inputForm.astro";
+import CustomAlert from "../../components/alert.astro";
+---
+
+<div>
+  <Layout title="Agregar Categoria">
+    <section>
+      <h2>Formulario Categoria</h2>
+      <div class="cardContainer">
+        <form class="flex flex-column" id="form1" action="submit">
+          <label for="">
+            <span>Nombre</span>
+            <CustomInput id='iName' name="name" type="text" _class="customInput" />
+          </label>
+          <label for="">
+            <span>Precio</span>
+            <CustomInput
+            id="iPrice"
+              icon="mdi:dollar"
+              name="price"
+              type="number"
+              _class=""
+            />
+          </label>
+          <button class="submitButton"> Enviar</button>
+        </form>
+      </div>
+      <CustomAlert type="success" text="Producto creado!" id="alert" />
+      <CustomAlert type="danger" text="Formulario incompleto" id="alert2" />
+    </section>
+  </Layout>
+</div>
+<script>
+  const form = document.querySelector("#form1") as HTMLFormElement;
+  const alertSuccess = document.querySelector("#alert") as HTMLFormElement;
+  const alertDanger = document.querySelector("#alert2") as HTMLFormElement;
+  const inputName = document.querySelector("#iName") as HTMLFormElement;
+  const inputPrice = document.querySelector("#iPrice") as HTMLFormElement;
+
+  const verificador = (form:any)=>{
+    
+    let {  name, price } = form; 
+    if (name === "") {
+      inputName.classList.add("error");
+      alertDanger.style.display = "block";    
+    }
+    if (price === "") {
+      inputPrice.classList.add("error");
+      alertDanger.style.display = "block";    
+    }
+
+
+  }
+
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const formObject = Object.fromEntries(formData.entries());
+
+    verificador(formObject);
+
+    await fetch("api/products/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formObject),
+    }).then((res) => {
+      console.log(res, "res of script");
+      if (res.status === 200) {
+        alertSuccess.style.display = "block";
+      }else if(res.status === 400){
+        alertDanger.style.display = "block";        
+        
+        
+      }
+    });
+  });
+</script>
+<style >
+  #alert {
+    display: none;
+  }
+
+  .submitButton {
+    align-self: center;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-color: aliceblue;
+    padding: 0px;
+  }
+
+  .cardContainer {
+   /* From https://css.glass */
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+    background: rgba(210, 187, 115, 0.33);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10.1px);
+    -webkit-backdrop-filter: blur(10.1px);
+    border: 1px solid rgba(210, 187, 115, 0.24);
+  }
+
+  .customInput {
+    background-color: red:  !important;
+    color: blue;
+    display: block;
+    padding: 10px;
+    width: 100%;
+  }
+
+</style>

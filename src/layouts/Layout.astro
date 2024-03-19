@@ -1,11 +1,14 @@
 ---
 interface Props {
   title: string;
+  visible1?: boolean;
+  visible2?: boolean;
 }
 
-const { title } = Astro.props;
-
+const { title, visible1, visible2 } = Astro.props;
+import { ViewTransitions } from "astro:transitions";
 import Navbarc from "../components/navbar.astro";
+import Sidebarc from "../components/sidebar.astro";
 ---
 
 <!doctype html>
@@ -15,55 +18,78 @@ import Navbarc from "../components/navbar.astro";
     <meta name="description" content="Astro description" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <meta name="generator" content={Astro.generator} />
     <link
       href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Noto+Sans:300,400,500,600,700,800|PT+Mono:300,400,500,600,700"
       rel="stylesheet"
     />
+    <ViewTransitions />
     <title>{title}</title>
   </head>
   <body>
-    <Navbarc titulo="My Title" link="/my-link" />
-    <slot />
+    {visible1 && <Navbarc />}
+    {visible2 && <Sidebarc />}
+
+    <div class={visible2 ? "sidebar-visible" : ""}>
+      <div class="contenido">
+        <slot />
+      </div>
+    </div>
+    <style lang="scss" is:global>
+      @import "/node_modules/primeflex/primeflex.css";
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      :root {
+        --accent: 136, 58, 234;
+        --accent-light: 224, 204, 250;
+        --accent-dark: 49, 10, 101;
+        --accent-gradient: linear-gradient(
+          45deg,
+          rgb(var(--accent)),
+          rgb(var(--accent-light)) 30%,
+          white 60%
+        );
+      }
+
+      .contenido {
+        width: 100%;
+        box-sizing: border-box;
+        transition: width 0.3s ease;
+      }
+
+      .sidebar-visible .contenido {
+       /* Asume que el ancho de tu sidebar es 200px */
+       margin-left: 250px;
+      }
+      body {
+        font-family: var(--font-stack-text);
+        font-weight: 400;
+        line-height: 1.4;
+        font-size: 1.2rem;
+        color: #2d2f31;
+        background-color: #e2e2e2;
+      }
+      * {
+        font-family:
+          Menlo,
+          Monaco,
+          Lucida Console,
+          Liberation Mono,
+          DejaVu Sans Mono,
+          Bitstream Vera Sans Mono,
+          Courier New,
+          monospace;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
   </body>
 </html>
-<style is:global>
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-  :root {
-    --accent: 136, 58, 234;
-    --accent-light: 224, 204, 250;
-    --accent-dark: 49, 10, 101;
-    --accent-gradient: linear-gradient(
-      45deg,
-      rgb(var(--accent)),
-      rgb(var(--accent-light)) 30%,
-      white 60%
-    );
-  }
-  body {
-    font-family: var(--font-stack-text);
-    font-weight: 400;
-    line-height: 1.4;
-    font-size: 1.6rem;
-    color: #2d2f31;
-  }
-  code {
-    font-family:
-      Menlo,
-      Monaco,
-      Lucida Console,
-      Liberation Mono,
-      DejaVu Sans Mono,
-      Bitstream Vera Sans Mono,
-      Courier New,
-      monospace;
-  }
-
-  .hidden {
-    display: none;
-  }
-</style>

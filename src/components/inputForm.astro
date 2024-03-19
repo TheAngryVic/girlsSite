@@ -3,92 +3,54 @@ interface Props {
   name: string;
   type: "number" | "text" | "password" | "email" | "tel";
   _class: string;
+  icon?: string;
+  id: string;
 }
-
-const { name, type, _class } = Astro.props;
+import { Icon } from "astro-icon/components";
+const { id, name, type, _class, icon } = Astro.props;
 ---
 
-<div>
-  <input type={type} class={_class} name={name} />
+<div class="inputContainer">
+  {icon && <Icon class="input-icon" name={icon} size={40} />}
+  <input id={id} type={type} class={_class} name={name} />
 </div>
 
 <style>
-  ._inputCustom {
+  .inputContainer {
+    position: relative;
+    display: flex;
     width: 100%;
+  }
+  .inputContainer input {
+    width: 90%;
+    max-height: 45px;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 24px;
     background-color: #f8f8f8;
     color: #000;
     font-weight: 500;
     font-family: "Roboto", sans-serif;
     outline: none;
     transition: 0.3s;
-    &:focus {
-      border: 1px solid #000;
-    }
-    &::placeholder {
-      color: #000;
-      font-weight: 500;
-      font-family: "Roboto", sans-serif;
-    }
-    &.error {
-      border: 1px solid #ff0000;
-    }
-    &.success {
-      border: 1px solid #00ff00;
-    }
-    &.warning {
-      border: 1px solid #ffcc00;
-    }
-    &.info {
-      border: 1px solid #00ccff;
-    }
-    &.disabled {
-      border: 1px solid #ccc;
-      background-color: #ccc;
-      color: #000;
-    }
-    &.readonly {
-      border: 1px solid #ccc;
-      background-color: #f8f8f8;
-      color: #000;
-    }
-    &.required {
-      border: 1px solid #ff0000;
-    }
-    &.optional {
-      border: 1px solid #00ff00;
-    }
-    &.valid {
-      border: 1px solid #00ff00;
-    }
-    &.invalid {
-      border: 1px solid #ff0000;
-    }
-    &.warning {
-      border: 1px solid #ffcc00;
-    }
-    &.info {
-      border: 1px solid #00ccff;
-    }
-    &.primary {
-      border: 1px solid #0000ff;
-    }
-    &.secondary {
-      border: 1px solid #ff00ff;
-    }
-    &.dark {
-      border: 1px solid #000;
-    }
-    &.light {
-      border: 1px solid #fff;
-    }
-    &.white {
-      border: 1px solid #fff;
-    }
+    padding-left: 15%;
+  }
+  .inputContainer .error {
+    border: 1.3px solid red;
+  }
+
+  .input-icon {
+    position: absolute;
+    top: 50%;
+    max-height: 40px;
+    width: 12%;
+    margin-left: 2px;
+    transform: translateY(-50%);
+    /* transform: translateX(1px); */
+    background-color: rgb(243 244 246);
+    /* border-left: 1px solid #ccc; */
   }
 </style>

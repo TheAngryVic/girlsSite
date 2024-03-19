@@ -1,0 +1,108 @@
+---
+import Layout from "../../layouts/LayoutAdmin.astro";
+import CustomVue  from '../../components/vueComponents/vueTable.vue';
+import {getProducts}  from '../../services/products.services.ts';
+// import { app as clientApp } from "../../firebase/client";
+// import { getFirestore, collection, getDocs } from 'firebase/firestore';
+
+
+let productsList:any = []
+productsList = await getProducts()
+console.log(productsList);
+
+
+
+const tableCols = [
+    // {
+    //     title: "uid",
+    //     dataKey: "uid",
+    // },
+     {
+        title: "Nombre",
+        dataKey: "name",
+        type: "text",
+    },
+     {
+        title: "Precio",
+        dataKey: "price",
+        type: "currency",
+    },
+    {
+        title: "Categoría",
+        dataKey: "categoriesFk",
+        type: "text",
+    },
+    {
+        title: "Marca",
+        dataKey: "brandsFk",
+        type: "text",
+    },
+    {
+        title: "Acciones",
+        dataKey: "actions",
+        type: "actions",
+    },
+    ];
+
+
+
+---
+
+<div>
+  <Layout title="Listado productos">
+    <section>
+        <h2 class="py-2">
+            Listado de productos
+        </h2>
+        <!-- <CustomTable id="1" data={dataTable} cols={tableCols}></CustomTable> -->
+        <CustomVue client:visible id="1" data={productsList} cols={tableCols} ></CustomVue>
+    </section>
+  </Layout>
+</div>
+
+<style >
+  #alert {
+    display: none;
+  }
+
+  .submitButton {
+    align-self: center;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-color: aliceblue;
+    padding: 0px;
+  }
+
+  .cardContainer {
+   /* From https://css.glass */
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+    background: rgba(210, 187, 115, 0.33);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10.1px);
+    -webkit-backdrop-filter: blur(10.1px);
+    border: 1px solid rgba(210, 187, 115, 0.24);
+  }
+
+  .customInput {
+    background-color: red:  !important;
+    color: blue;
+    display: block;
+    padding: 10px;
+    width: 100%;
+  }
+
+</style>

@@ -1,0 +1,62 @@
+---
+interface Props {
+  id: string;
+  text: string;
+  type: "danger" | "success" | "warning" | "info";
+}
+const { id, text, type} = Astro.props;
+let _color = '';
+switch (type) {
+    case 'danger':
+        _color = '#f44336';
+        break;
+    case 'success':
+        _color = '#4CAF50';
+        break;
+    case 'warning':
+        _color = '#ff9800';
+        break;
+    case 'info':
+        _color = '#2196F3';
+        break;
+
+   
+}
+
+
+
+
+---
+<div id={id} class="alert" style={`background-color: ${_color};`}>
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {text}
+  </div>
+<style>
+/* The alert message box */
+.alert {
+    display: none;
+  margin-top: 30px;
+  padding: 20px;
+  min-width: 30%;
+  color: white;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
+}
+</style>

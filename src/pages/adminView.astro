@@ -1,0 +1,50 @@
+---
+import { app } from "../firebase/server";
+import { app as clientApp } from "../firebase/client";
+import { getAuth } from "firebase-admin/auth";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import type { IUser } from "../model/model.interfaces";
+import { Icon } from "astro-icon/components";
+import Layout from "../layouts/LayoutAdmin.astro";
+import Sidebar from "../components/sidebar.astro";
+
+const auth = getAuth(app);
+const firestore = getFirestore(clientApp);
+if (!Astro.cookies.has("session")) {
+  return Astro.redirect("/signin");
+}
+const sessionCookie = Astro.cookies.get("session")?.value || "";
+const decodedCookie = await auth.verifySessionCookie(sessionCookie);
+const user = await auth.getUser(decodedCookie.uid);
+
+if (!user) {
+  return Astro.redirect("/signin");
+}
+
+async function getRol(uid: any) {
+  let final = null;
+
+  const docRef = doc(firestore, `users/${uid}`);
+  const cifrado = await getDoc(docRef);
+
+  if (cifrado.exists()) {
+    final = cifrado.data();
+  }
+
+  return final;
+}
+
+let x = await getRol(user.uid);
+console.log(x);
+
+if (x?.role === "user") {
+  console.log("no hay rol");
+  return Astro.redirect("/signin");
+}
+---
+
+<div>
+  <Layout title="Admin web ui" />
+</div>
+
+<style lang="scss"></style>

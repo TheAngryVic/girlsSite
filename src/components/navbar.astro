@@ -1,19 +1,36 @@
 ---
-interface Props {
-  titulo: string;
-  link: string;
-}
-
 const { titulo, link } = Astro.props;
-
+import { Image } from "astro:assets";
+import { app } from "../firebase/server";
+import { getAuth } from "firebase-admin/auth";
 import { Astronav, MenuItems, MenuIcon } from "astro-navbar";
-import CInput from "../components/inputForm.astro";
+import CustomInput from "../components/inputForm.astro";
+import CustomBtn from "./vueComponents/customButton.vue";
+
+import { Icon } from "astro-icon/components";
+
+
+let session = Astro.cookies.has("session");
+
+let user = "Iniciar Sesion";
+
+/* Verificar si el usuario está autenticado */
+const auth = getAuth(app);
+if (Astro.cookies.has("session")) {
+  const sessionCookie = Astro.cookies.get("session")?.value || "";
+  const decodedCookie = await auth.verifySessionCookie(sessionCookie);
+
+  user = decodedCookie.name;
+}
 ---
 
 <div>
   <Astronav>
-    <div id="navBar" class="flex">
-      <div class="">
+    <div
+      id="navBar"
+      class="grid flex-row align-items-center justify-content-between"
+    >
+      <div class="col-12 md:col-1">
         <a class="__logoWrapper" href="{{ link }}">
           <img
             class="logo"
@@ -22,61 +39,121 @@ import CInput from "../components/inputForm.astro";
           />
         </a>
       </div>
-      <div>
-        <MenuIcon class="w-4 h-4 text-gray-800" />
-        <label for="astronav-menu">Menú</label>
+      <div class="col-12 md:col-2 menuIcon">
+        <MenuIcon class="w-15 h-12 text-gray-900 bg-stone-400" />
+        <label class="aparece" for="astronav-menu">Menú</label>
       </div>
-      <CInput name="buscador" type="text" _class="clase" />
+      <div class="col-12 md:col-3 aparece">
+        <CustomInput
+          icon="mdi:search"
+          name="buscador"
+          type="text"
+          _class="col-4 "
+        />
+      </div>
+      <div class="col-12 md:col-1">
+        {session? <a href="/adminView">{`Hola, ${user}`}</a> : <p>Iniciar Sesion</p> } 
+      </div>
+      <div class="col-12 md:col-1">
+        <p>Mis compras</p>
+      </div>
+      <div class="col-12 md:col-1">
+        <a href="#"><Icon size={40} class="iconHeader" name="mdi:bell" /> </a>
+      </div>
+      <div class="col md:col-1">
+        <a href="#"><Icon size={40} class="iconHeader" name="mdi:cart" /> </a>
+      </div>
     </div>
-    <MenuItems class="hidden lg:flex">
-      <ul>
-        <li><a href="">login</a></li>
-        <li><a href="">destacados</a></li>
-        <li><a href="">tienda</a></li>
-      </ul>
+    <MenuItems class="hidden">
+      <div class="menuItemlist">
+        <ul>
+          {
+            session ? (
+              <li >
+                <div class="p-3">
+                  <CustomBtn  client:visible label="logout" ></CustomBtn>
+                  </div>
+              </li>
+            ) : (
+              <li>
+                <a href="/signin">login</a>
+              </li>
+            )
+          }
+
+          <li><a href="">destacados</a></li>
+          <li><a href="">tienda</a></li>
+        </ul>
+      </div>
     </MenuItems>
   </Astronav>
 </div>
-<!-- <header>
-  <nav id="navBar">
-    <div class="nav-wrapper">
-      <div class="logo">
-        <a href="{{ link }}">
-          <img
-            src="https://www.astro.com.br/wp-content/uploads/2021/06/astro-logo.svg"
-            alt="Logo Astro"
-          />
-        </a>
-      </div>
 
-      <ul id="menu">
-        <li><a href="">home</a></li>
-        <li><a href="">home</a></li>
-        <li><a href="">home</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <div id="burguerButton" class="menuIcon">
-    <span class="icon icon-bars"></span>
-    <span class="icon icon-bars overlay"></span>
-  </div>
-
-  <div class="overlay-menu">
-    <ul id="menu">
-      <li><a href="">home</a></li>
-      <li><a href="">home</a></li>
-      <li><a href="">home</a></li>
-    </ul>
-  </div>
-</header> -->
-
-<style>
+<style >
   * {
     border: 0;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+  }
+
+  .test {
+    color: red;
+  }
+
+  .menuItemlist {
+    height: 100vh;
+    width: 20%;
+    background-color: #f3eeea;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    padding: 0 16px;
+  }
+
+  .aparece {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    .menuItemlist {
+      /* Aquí puedes especificar los estilos que quieres aplicar cuando el ancho de la pantalla sea de 425px o menos */
+      width: 100%;
+      padding: 0;
+    }
+  }
+  @media screen and (min-width: 425px) and (max-width: 769px) {
+    .aparece {
+      display: none;
+    }
+  }
+
+  .menuIcon {
+    display: flex;
+    justify-content: flex-start;
+    > label {
+      padding-left: 10px;
+    }
+  }
+
+  .menuItemlist ul li {
+    list-style: none;
+    padding: 10px;
+    border-bottom: black 1px solid;
+  }
+
+  .menuItemlist ul li a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .menuItemlist ul li a:hover {
+    color: #8d3737;
+    background-color: #e9e4e0;
+  }
+
+  #navBar {
+    background-color: #f3eeea;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    padding: 0 16px;
   }
 
   a {
@@ -86,21 +163,10 @@ import CInput from "../components/inputForm.astro";
     text-decoration: none;
   }
 
-  .nav-wrapper {
-    margin: auto;
-    text-align: center;
-    width: 70%;
+  .iconHeader {
+    color: rgb(141, 55, 55);
   }
-  @media (max-width: 768px) {
-    .nav-wrapper {
-      width: 90%;
-    }
-  }
-  @media (max-width: 638px) {
-    .nav-wrapper {
-      width: 100%;
-    }
-  }
+
   .logo {
     float: left;
     margin-left: 28px;
@@ -108,103 +174,6 @@ import CInput from "../components/inputForm.astro";
     height: 40px;
     letter-spacing: 1px;
     text-transform: uppercase;
-  }
-  @media (max-width: 768px) {
-    .logo {
-      /*       margin-left: 5px; */
-    }
-  }
-
-  .flex {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
-
-  #navBar {
-    background: white;
-    color: rgb(13, 26, 38);
-    /* position: fixed; */
-    top: 0;
-    height: 60px;
-    line-height: 60px;
-    width: 100vw;
-    /* z-index: 10; */
-  }
-
-  #navBar ul {
-    display: inline-block;
-    list-style: none;
-  }
-  @media (max-width: 640px) {
-    #navBar ul {
-      display: none;
-    }
-  }
-  @media (orientation: landscape) {
-    #navBar ul {
-      display: inline-block;
-    }
-  }
-
-  #navBar li {
-    display: inline-block;
-  }
-
-  #navBar li a {
-    color: rgb(13, 26, 38);
-    display: block;
-    font-size: 0.7em;
-    height: 50px;
-    letter-spacing: 1px;
-    margin: 0 20px;
-    padding: 0 4px;
-    position: relative;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: all 0.5s ease;
-    -webkit-transition: all 0.5s ease;
-  }
-
-  #navBar li a:hover {
-    /* border-bottom: 1px solid rgb(28, 121, 184); */
-    color: rgb(28, 121, 184);
-    transition: all 1s ease;
-    -webkit-transition: all 1s ease;
-  }
-
-  /* Animated Bottom Line */
-  #navBar li a:before,
-  #navBar li a:after {
-    content: "";
-    position: absolute;
-    width: 0%;
-    height: 1px;
-    bottom: -1px;
-    background: rgb(13, 26, 38);
-  }
-
-  #navBar li a:before {
-    left: 0;
-    transition: 0.5s;
-  }
-
-  #navBar li a:after {
-    background: rgb(13, 26, 38);
-    right: 0;
-    /* transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); */
-  }
-
-  #navBar li a:hover:before {
-    background: rgb(13, 26, 38);
-    width: 100%;
-    transition: width 0.5s cubic-bezier((0.22, 0.61, 0.36, 1));
-  }
-
-  #navBar li a:hover:after {
-    background: transparent;
-    width: 100%;
-    /* transition: 0s; */
   }
 
   .__logoWrapper {

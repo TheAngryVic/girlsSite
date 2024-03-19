@@ -1,0 +1,10 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FeedbackForm from "../components/vueComponents/formRegister.vue";
+---
+
+<Layout visible1={true} title="Registro">
+  <h1>Registro</h1>
+  <p>¿Ya tienes una cuenta? <a href="/signin">Iniciar sesión</a></p>
+  <FeedbackForm client:load />
+</Layout>
